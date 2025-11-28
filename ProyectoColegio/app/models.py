@@ -29,6 +29,17 @@ class Administrador(models.Model):
     def __str__(self):
         return self.usuario.nombre
     
+class Eventos(models.Model):
+    titulo = models.CharField(max_length=200)
+    descripcion = models.TextField()
+    fecha_inicio = models.DateTimeField()
+    fecha_fin = models.DateTimeField()
+    creador_por = models.ForeignKey(Administrador, on_delete=models.CASCADE)
     
-
-
+    class Meta:
+        verbose_name = "Evento"
+        verbose_name_plural = "Eventos"
+        db_table = "evento"
+        
+    def __str__(self):
+        return self.titulo
