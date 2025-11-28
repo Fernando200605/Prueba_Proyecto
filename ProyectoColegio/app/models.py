@@ -42,12 +42,34 @@ class Eventos(models.Model):
     class Meta:
         verbose_name = "Evento"
         verbose_name_plural = "Eventos"
-        db_table = "evento"
+        db_table = "Evento"
         
     def __str__(self):
       return self.titulo
-
-
+class Docente (models.Model):
+    id =models.OneToOneField(Usuario, on_delete=models.CASCADE,primary_key=True)
+    especialidad = models.TextField()
+    class Meta:
+        verbose_name = "docente"
+        verbose_name_plural = "docentes"
+        db_table = "docente"
+    def __str__ (self):
+        return self.id.nombre 
+class Curso (models.Model):
+    id = models.AutoField(primary_key=True)
+    nom = models.CharField(max_length=100)
+    jornada =models.CharField(max_length=200)
+    codigo = models.CharField(max_length=50)
+    capacidad = models.IntegerField()
+    fechainicio = models.DateTimeField(auto_now_add=True)
+    fechafin = models.DateTimeField(auto_now=True)
+    docenteid = models.ForeignKey(Docente, on_delete=models.CASCADE)
+    class Meta:
+        verbose_name = "curso"
+        verbose_name_plural = "Cursos"
+        db_table = "Curso"
+    def __str__ (self):
+        return self.nom 
 class Estudiante(models.Model):
     usuario = models.OneToOneField(Usuario,on_delete=models.CASCADE,primary_key=True)
     codigo = models.TextField(max_length=50, null=True, blank=True, verbose_name="Codigo")
@@ -64,15 +86,7 @@ class Estudiante(models.Model):
         verbose_name_plural = "Estudiantes" 
         db_table = "Estudiante"
         
-class Docente (models.Model):
-    id =models.OneToOneField(Usuario, on_delete=models.CASCADE)
-    especialidad = models.TextField()
-    class Meta:
-        verbose_name = "docente"
-        verbose_name_plural = "docentes"
-        db_table = "docente"
-    def __str__ (self):
-        return self.usuario.nom 
+
 class Acudiente(models.Model):
     usuario = models.OneToOneField(Usuario,on_delete=models.CASCADE,primary_key=True)
     telefono = models.TextField(max_length=10, null=True, blank=True, verbose_name="Telefono")
@@ -113,21 +127,7 @@ class Asistencia (models.Model):
         db_table = "asistencia"
 
 #creacion de modelo curso
-class Curso (models.Model):
-    id = models.AutoField(primary_key=True)
-    nom = models.CharField(max_length=100)
-    jornada =models.CharField(max_length=200)
-    codigo = models.CharField(max_length=50)
-    capacidad = models.IntegerField()
-    fechainicio = models.DateTimeField(auto_now_add=True)
-    fechafin = models.DateTimeField(auto_now=True)
-    docenteid = models.ForeignKey(Docente, on_delete=models.CASCADE)
-    class Meta:
-        verbose_name = "curso"
-        verbose_name_plural = "Cursos"
-        db_table = "Curso"
-    def __str__ (self):
-        return self.nom 
+
 
 class categoria(models.Model):
     nombre = models.CharField(max_length=50)
@@ -181,7 +181,7 @@ class Elemento(models.Model):
     tipoElementoId = models.ForeignKey(tipoelemento, on_delete=models.CASCADE)
     categoriaId = models.ForeignKey(categoria, on_delete=models.CASCADE)
     marcaId = models.ForeignKey(marca, on_delete=models.CASCADE)
-    unidadMedidaId = models.ForeignKey(unidadmedida, on_delete=models.CASCADE)
+    unidadMedidaId = models.ForeignKey(UnidadMedida, on_delete=models.CASCADE)
     ubicacion = models.CharField(max_length=100)
     fechaCreacion = models.DateTimeField(auto_now_add=True)
     fechaActualizacion = models.DateTimeField(auto_now=True)
@@ -211,17 +211,20 @@ class Movimiento(models.Model):
 
     def __str__(self):
         return self.tipo
-class Evento(models.Model):
-    titulo = models.CharField(max_length=100)
-    descripcion = models.TextField()
-    fechaInicio = models.DateTimeField()
-    fechaFin = models.DateTimeField()
-    creadoPorUsuarioId = models.ForeignKey(Usuario,on_delete=models.CASCADE)
+    
+class notificacion(models.Model):
+    titulo = models.CharField(max_length=200)
+    mensaje = models.TextField()
+    fecha_envio = models.DateTimeField(auto_now_add=True)
+    estado = models.BooleanField(default=False)
+    tipo = models.CharField(max_length=50)
+    receptor = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    evento = models.ForeignKey(Eventos, on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
-        verbose_name = 'Evento'
-        verbose_name_plural = 'Eventos'
-        db_table = 'evento'
+        verbose_name = "Notificación"
+        verbose_name_plural = "Notificaciones"
+        db_table = "notificacion"
 
     def __str__(self):
         return self.titulo
