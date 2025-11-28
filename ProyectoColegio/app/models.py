@@ -229,3 +229,18 @@ class notificacion(models.Model):
     def __str__(self):
         return self.titulo
 
+class Mensaje(models.Model):
+    remitente = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='mensajes_enviados')
+    receptor = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='mensajes_recibidos')
+    asunto = models.CharField(max_length=200)
+    cuerpo = models.TextField()
+    fecha_envio = models.DateTimeField(auto_now_add=True)
+    leido = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Mensaje"
+        verbose_name_plural = "Mensajes"
+        db_table = "mensaje"
+
+    def __str__(self):
+        return self.asunto
